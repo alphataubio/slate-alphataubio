@@ -74,8 +74,20 @@ void herk(
             // block row C(i, 0:i) and block col C(i:n, i)
             BcastList bcast_list_A;
             for (int64_t i = 0; i < A.mt(); ++i) {
-                bcast_list_A.push_back({i, 0, {C.sub(i, i, 0, i),
-                                               C.sub(i, C.mt()-1, i, i)}});
+                std::list<BaseMatrix<scalar_t>> dst_list;
+                // Add tiles from block row C(i, j) for j <= i
+                for (int64_t j = 0; j <= i; ++j) {
+                    if (C.tileExists(i, j)) {
+                        dst_list.push_back(C.sub(i, i, j, j));
+                    }
+                }
+                // Add tiles from block col C(j, i) for j >= i
+                for (int64_t j = i; j < C.mt(); ++j) {
+                    if (C.tileExists(j, i)) {
+                        dst_list.push_back(C.sub(j, j, i, i));
+                    }
+                }
+                bcast_list_A.push_back({i, 0, dst_list});
             }
             A.template listBcast<target>(bcast_list_A, layout);
         }
@@ -89,8 +101,20 @@ void herk(
                 // block row C(i, 0:i) and block col C(i:n, i)
                 BcastList bcast_list_A;
                 for (int64_t i = 0; i < A.mt(); ++i) {
-                    bcast_list_A.push_back({i, k, {C.sub(i, i, 0, i),
-                                                   C.sub(i, C.mt()-1, i, i)}});
+                    std::list<BaseMatrix<scalar_t>> dst_list;
+                    // Add tiles from block row C(i, j) for j <= i
+                    for (int64_t j = 0; j <= i; ++j) {
+                        if (C.tileExists(i, j)) {
+                            dst_list.push_back(C.sub(i, i, j, j));
+                        }
+                    }
+                    // Add tiles from block col C(j, i) for j >= i
+                    for (int64_t j = i; j < C.mt(); ++j) {
+                        if (C.tileExists(j, i)) {
+                            dst_list.push_back(C.sub(j, j, i, i));
+                        }
+                    }
+                    bcast_list_A.push_back({i, k, dst_list});
                 }
                 A.template listBcast<target>(bcast_list_A, layout);
             }
@@ -122,13 +146,24 @@ void herk(
                                  depend(in:bcast[k+lookahead-1]) \
                                  depend(out:bcast[k+lookahead])
                 {
-                    // broadcast A(k+la, i) to ranks owning
+                    // broadcast A(i, k+lookahead) to ranks owning
                     // block row C(i, 0:i) and block col C(i:n, i)
                     BcastList bcast_list_A;
                     for (int64_t i = 0; i < A.mt(); ++i) {
-                        bcast_list_A.push_back(
-                            {i, k+lookahead, {C.sub(i, i, 0, i),
-                                              C.sub(i, C.mt()-1, i, i)}});
+                        std::list<BaseMatrix<scalar_t>> dst_list;
+                        // Add tiles from block row C(i, j) for j <= i
+                        for (int64_t j = 0; j <= i; ++j) {
+                            if (C.tileExists(i, j)) {
+                                dst_list.push_back(C.sub(i, i, j, j));
+                            }
+                        }
+                        // Add tiles from block col C(j, i) for j >= i
+                        for (int64_t j = i; j < C.mt(); ++j) {
+                            if (C.tileExists(j, i)) {
+                                dst_list.push_back(C.sub(j, j, i, i));
+                            }
+                        }
+                        bcast_list_A.push_back({i, k+lookahead, dst_list});
                     }
                     A.template listBcast<target>(bcast_list_A, layout);
                 }
