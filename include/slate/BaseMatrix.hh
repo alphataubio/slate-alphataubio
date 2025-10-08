@@ -1939,22 +1939,73 @@ void BaseMatrix<scalar_t>::listBcast(
     // Also, currently, the message is received to the same buffer.
 
     std::vector< std::set<ij_tuple> > tile_set(num_devices());
-    int mpi_size;
+    int mpi_rank, mpi_size;
     MPI_Comm_size(mpiComm(), &mpi_size);
+    MPI_Comm_rank(mpiComm(), &mpi_rank);
+    
+    // implement irregular communication pattern from LAMMPS (@alphataubio, 2025/10)
+    // https://www.youtube.com/live/fhNhZ6ilTOU?si=i6X-oOBeCNE_rm8X&t=3092
+    
+    std::vector<std::array<int64_t, 3>> ij_dest_all;
+    std::vector<int> nrecv_all(mpi_size, 0);
+    std::vector<int> recvcounts(mpi_size, 1);
 
-    std::vector<MPI_Request> send_requests;
+    for (auto bcast : bcast_list) {
+        auto submatrices_list = std::get<2>(bcast);
+        for (auto submatrix : submatrices_list) {
+            for (int64_t i = 0; i < submatrix.mt(); ++i) {
+                for (int64_t j = 0; j < submatrix.nt(); ++j) {
+                    if( !tileIsLocal(i, j) ) continue; // skip if i dont own this tile
+                    int dest = tileRank(i, j);
+                    if( dest == mpi_rank ) continue; // skip if i need to send tile to myself
+                    ij_dest_all.push_back({i,j,dest});
+                    nrecv_all.at(dest)++;
+                    fprintf(stderr, "[Rank %d] sending tile (%lld,%lld) to rank %d\n", mpi_rank, i, j, dest);
 
+                }
+            }
+        }
+    }
+
+    int nrecv;
+    slate_mpi_call(MPI_Reduce_scatter(nrecv_all.data(), &nrecv, recvcounts.data(), MPI_INT, MPI_SUM, mpiComm()));
+    std::vector<MPI_Request> isend_requests;
+    
+    int device = HostNum;
+
+    for (auto ij_dest : ij_dest_all) {
+        int64_t i = ij_dest[0];
+        int64_t j = ij_dest[1];
+        int64_t dest = ij_dest[2];
+        MPI_Request req1, req2;
+        MPI_Isend(ij_dest.data(), 2, MPI_INT64_T, dest, 0, mpiComm(), &req1);
+        if (target == Target::Devices && gpu_aware_mpi()) device = tileDevice( i, j );
+        tileGetForReading(i, j, device, LayoutConvert(layout));
+        at(i, j, device).isend(dest, mpiComm(), 0, &req2);
+        isend_requests.push_back(req1);
+        isend_requests.push_back(req2);
+    }
+
+    // Receive.
+    for (int n = 0; n < nrecv; ++n) {
+        int64_t ij[2];
+        MPI_Recv(ij, 2, MPI_INT64_T, MPI_ANY_SOURCE, 0, mpiComm(), MPI_STATUS_IGNORE);
+        int64_t i = ij[0];
+        int64_t j = ij[1];
+        
+        fprintf(stderr, "[Rank %d] receiving tile (%lld,%lld)\n", mpi_rank, i, j);
+        if (target == Target::Devices && gpu_aware_mpi()) device = tileDevice( i, j );
+        tileAcquire(i, j, device, layout);
+        at(i, j, device).recv(MPI_ANY_SOURCE, mpiComm(), layout, 0);
+        tileModified(i, j, device, true);
+    }
+
+/*
     for (auto bcast : bcast_list) {
 
         auto i = std::get<0>(bcast);
         auto j = std::get<1>(bcast);
-        auto submatrices_list = std::get<2>(bcast);
 
-        // Find the set of participating ranks.
-        std::set<int> bcast_set;
-        bcast_set.insert(tileRank(i, j));       // Insert root.
-        for (auto submatrix : submatrices_list) // Insert destinations.
-            submatrix.getRanks(&bcast_set);
 
         // If this rank is in the set.
         if (bcast_set.find(mpi_rank_) != bcast_set.end()) {
@@ -1965,10 +2016,7 @@ void BaseMatrix<scalar_t>::listBcast(
             }
             storage_->tilePrepareToReceive( globalIndex( i, j ), device, layout_ );
 
-            // Send across MPI ranks.
-            // Previous used MPI bcast: tileBcastToSet(i, j, bcast_set);
-            // Currently uses 2D hypercube p2p send.
-            tileIbcastToSet(i, j, bcast_set, 2, tag, layout, send_requests, target);
+            
         }
 
         // Copy to devices.
@@ -2022,8 +2070,11 @@ void BaseMatrix<scalar_t>::listBcast(
             }
         }
     }
+*/
+
     slate_mpi_call(
-        MPI_Waitall(send_requests.size(), send_requests.data(), MPI_STATUSES_IGNORE));
+        MPI_Waitall(isend_requests.size(), isend_requests.data(), MPI_STATUSES_IGNORE));
+      
 }
 
 //------------------------------------------------------------------------------
