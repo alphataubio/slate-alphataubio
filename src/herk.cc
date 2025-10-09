@@ -6,9 +6,6 @@
 #include "slate/slate.hh"
 #include "internal/internal.hh"
 
-#include <cstdio>
-
-
 namespace slate {
 
 namespace impl {
@@ -33,10 +30,6 @@ void herk(
 {
     using real_t = blas::real_type<scalar_t>;
     using BcastList = typename Matrix<scalar_t>::BcastList;
-    
-    int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
 
     // Assumes column major
     const Layout layout = Layout::ColMajor;
@@ -70,55 +63,100 @@ void herk(
     // set min number for omp nested active parallel regions
     slate::OmpSetMaxActiveLevels set_active_levels( MinOmpActiveLevels );
 
-#pragma omp parallel
-#pragma omp master
-{
-    int64_t nt = A.nt();
-    int64_t mt = A.mt();
-    int64_t la = lookahead;
-    std::vector<std::vector<MPI_Request>> col_reqs(nt);
-
-    int64_t first_post = std::min<int64_t>(nt, la);
-    for (int64_t k = 0; k < first_post; ++k) {
-        BcastList bcast_list;
-        for (int64_t i = 0; i < mt; ++i)
-            bcast_list.push_back({i, k, {C.sub(i, i, 0, i), C.sub(i, C.mt()-1, i, i)}});
-        col_reqs[k] = A.template listIbcast<target>(bcast_list, layout);
-    }
-
-    for (int64_t k = 0; k < nt; ++k) {
-
-        int64_t post_k = k + la;
-        if (post_k < nt) {
-            BcastList bcast_list;
-            for (int64_t i = 0; i < mt; ++i)
-                bcast_list.push_back({i, post_k, {C.sub(i, i, 0, i), C.sub(i, C.mt()-1, i, i)}});
-            col_reqs[post_k] = A.template listIbcast<target>(bcast_list, layout);
+    #pragma omp parallel
+    #pragma omp master
+    {
+        // Lower/NoTrans or Upper/ConjTrans case
+        // send 1st block col of A
+        #pragma omp task depend(out:bcast[0])
+        {
+            // broadcast A(i, 0) to ranks owning
+            // block row C(i, 0:i) and block col C(i:n, i)
+            BcastList bcast_list_A;
+            for (int64_t i = 0; i < A.mt(); ++i) {
+                bcast_list_A.push_back({i, 0, {C.sub(i, i, 0, i),
+                                               C.sub(i, C.mt()-1, i, i)}});
+            }
+            A.template listBcast<target>(bcast_list_A, layout);
         }
 
-        #pragma omp task firstprivate(k) depend(in:col_reqs[k])
-        {
-            if (!col_reqs[k].empty()) {
-                slate_mpi_call(MPI_Waitall(static_cast<int>(col_reqs[k].size()), col_reqs[k].data(), MPI_STATUSES_IGNORE));
+        // send next lookahead block cols of A
+        for (int64_t k = 1; k < lookahead+1 && k < A.nt(); ++k) {
+            #pragma omp task depend(in:bcast[k-1]) \
+                             depend(out:bcast[k])
+            {
+                // broadcast A(i, k) to ranks owning
+                // block row C(i, 0:i) and block col C(i:n, i)
+                BcastList bcast_list_A;
+                for (int64_t i = 0; i < A.mt(); ++i) {
+                    bcast_list_A.push_back({i, k, {C.sub(i, i, 0, i),
+                                                   C.sub(i, C.mt()-1, i, i)}});
+                }
+                A.template listBcast<target>(bcast_list_A, layout);
             }
+        }
 
+        // multiply alpha A(:, 0) A(0, :)^H + beta C
+        #pragma omp task depend(in:bcast[0]) \
+                         depend(out:gemm[0])
+        {
             internal::herk<target>(
-                alpha,
-                A.sub(0, mt-1, k, k),
-                (k == 0 ? beta : real_t(1.0)),
-                std::move(C),
-                priority_0, queue_0, layout
-            );
+                alpha, A.sub(0, A.mt()-1, 0, 0),
+                beta,  std::move(C),
+                priority_0, queue_0, layout );
 
-            auto A_colblock = A.sub(0, mt-1, k, k);
+            auto A_colblock = A.sub(0, A.mt()-1, 0, 0);
+
+            // Erase remote tiles on all devices including host
             A_colblock.releaseRemoteWorkspace();
+
+            // Erase local workspace on devices.
             A_colblock.releaseLocalWorkspace();
         }
-    }
 
-    #pragma omp taskwait
-    C.tileUpdateAllOrigin();
-}
+        for (int64_t k = 1; k < A.nt(); ++k) {
+
+            // send next block col of A and block row of B
+            if (k+lookahead < A.nt()) {
+                #pragma omp task depend(in:gemm[k-1]) \
+                                 depend(in:bcast[k+lookahead-1]) \
+                                 depend(out:bcast[k+lookahead])
+                {
+                    // broadcast A(k+la, i) to ranks owning
+                    // block row C(i, 0:i) and block col C(i:n, i)
+                    BcastList bcast_list_A;
+                    for (int64_t i = 0; i < A.mt(); ++i) {
+                        bcast_list_A.push_back(
+                            {i, k+lookahead, {C.sub(i, i, 0, i),
+                                              C.sub(i, C.mt()-1, i, i)}});
+                    }
+                    A.template listBcast<target>(bcast_list_A, layout);
+                }
+            }
+
+            // multiply alpha A(:, k) A(k, :) + C, no beta
+            #pragma omp task depend(in:bcast[k]) \
+                             depend(in:gemm[k-1]) \
+                             depend(out:gemm[k])
+            {
+                internal::herk<target>(
+                    alpha,       A.sub(0, A.mt()-1, k, k),
+                    real_t(1.0), std::move(C),
+                    priority_0, queue_0, layout );
+
+                auto A_colblock = A.sub(0, A.mt()-1, k, k);
+
+                // Erase remote tiles on all devices including host
+                A_colblock.releaseRemoteWorkspace();
+
+                // Erase local workspace on devices.
+                A_colblock.releaseLocalWorkspace();
+            }
+        }
+
+        #pragma omp taskwait
+        C.tileUpdateAllOrigin();
+    }
 
     C.clearWorkspace();
 }

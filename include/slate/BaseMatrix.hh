@@ -29,9 +29,6 @@
 #include "slate/internal/mpi.hh"
 #include "slate/internal/openmp.hh"
 
-#include <cstdio>
-
-
 namespace slate {
 
 //==============================================================================
@@ -478,9 +475,6 @@ public:
 
     template <Target target = Target::Host>
     void listBcast( BcastList& bcast_list, Layout layout, int tag = 0, bool is_shared = false );
-
-    template <Target target = Target::Host>
-    std::vector<MPI_Request> listIbcast( BcastList& bcast_list, Layout layout, int tag = 0, bool is_shared = false );
 
     // This variant takes a BcastListTag where each <i,j> tile has
     // its own message tag
@@ -1945,28 +1939,72 @@ void BaseMatrix<scalar_t>::listBcast(
     // Also, currently, the message is received to the same buffer.
 
     std::vector< std::set<ij_tuple> > tile_set(num_devices());
-    int mpi_size;
+    int mpi_rank, mpi_size;
     MPI_Comm_size(mpiComm(), &mpi_size);
+    MPI_Comm_rank(mpiComm(), &mpi_rank);
     
-    std::fprintf(stderr, "\n\n");
+    // implement irregular communication pattern from LAMMPS (@alphataubio, 2025/10)
+    // https://www.youtube.com/live/fhNhZ6ilTOU?si=i6X-oOBeCNE_rm8X&t=3092
+    
+    std::vector<std::array<int64_t, 3>> ij_dest_all;
+    std::vector<int> nrecv_all(mpi_size, 0);
+    std::vector<int> recvcounts(mpi_size, 1);
 
+    for (auto bcast : bcast_list) {
+        auto submatrices_list = std::get<2>(bcast);
+        for (auto submatrix : submatrices_list) {
+            for (int64_t i = 0; i < submatrix.mt(); ++i) {
+                for (int64_t j = 0; j < submatrix.nt(); ++j) {
+                    if( !tileIsLocal(i, j) ) continue; // skip if i dont own this tile
+                    int dest = tileRank(i, j);
+                    if( dest == mpi_rank ) continue; // skip if i need to send tile to myself
+                    ij_dest_all.push_back({i,j,dest});
+                    nrecv_all.at(dest)++;
+                    fprintf(stderr, "[Rank %d] sending tile (%lld,%lld) to rank %d\n", mpi_rank, i, j, dest);
 
-    std::vector<MPI_Request> send_requests;
+                }
+            }
+        }
+    }
 
+    int nrecv;
+    slate_mpi_call(MPI_Reduce_scatter(nrecv_all.data(), &nrecv, recvcounts.data(), MPI_INT, MPI_SUM, mpiComm()));
+    std::vector<MPI_Request> isend_requests;
+    
+    int device = HostNum;
+
+    for (auto ij_dest : ij_dest_all) {
+        int64_t i = ij_dest[0];
+        int64_t j = ij_dest[1];
+        int64_t dest = ij_dest[2];
+        MPI_Request req1, req2;
+        MPI_Isend(ij_dest.data(), 2, MPI_INT64_T, dest, 0, mpiComm(), &req1);
+        if (target == Target::Devices && gpu_aware_mpi()) device = tileDevice( i, j );
+        tileGetForReading(i, j, device, LayoutConvert(layout));
+        at(i, j, device).isend(dest, mpiComm(), 0, &req2);
+        isend_requests.push_back(req1);
+        isend_requests.push_back(req2);
+    }
+
+    // Receive.
+    for (int n = 0; n < nrecv; ++n) {
+        int64_t ij[2];
+        MPI_Recv(ij, 2, MPI_INT64_T, MPI_ANY_SOURCE, 0, mpiComm(), MPI_STATUS_IGNORE);
+        int64_t i = ij[0];
+        int64_t j = ij[1];
+        
+        fprintf(stderr, "[Rank %d] receiving tile (%lld,%lld)\n", mpi_rank, i, j);
+        if (target == Target::Devices && gpu_aware_mpi()) device = tileDevice( i, j );
+        tileAcquire(i, j, device, layout);
+        at(i, j, device).recv(MPI_ANY_SOURCE, mpiComm(), layout, 0);
+        tileModified(i, j, device, true);
+    }
+
+/*
     for (auto bcast : bcast_list) {
 
         auto i = std::get<0>(bcast);
         auto j = std::get<1>(bcast);
-        auto submatrices_list = std::get<2>(bcast);
-
-        // Find the set of participating ranks.
-        std::set<int> bcast_set;
-        bcast_set.insert(tileRank(i, j));       // Insert root.
-        for (auto submatrix : submatrices_list) // Insert destinations.
-            submatrix.getRanks(&bcast_set);
-            
-        std::fprintf(stderr, "*** [Rank %d] i %lld j %lld ", mpi_rank_, i, j);
-        for( auto &val : bcast_set) std::fprintf(stderr, "%i ", val);
 
 
         // If this rank is in the set.
@@ -1978,10 +2016,7 @@ void BaseMatrix<scalar_t>::listBcast(
             }
             storage_->tilePrepareToReceive( globalIndex( i, j ), device, layout_ );
 
-            // Send across MPI ranks.
-            // Previous used MPI bcast: tileBcastToSet(i, j, bcast_set);
-            // Currently uses 2D hypercube p2p send.
-            tileIbcastToSet(i, j, bcast_set, 2, tag, layout, send_requests, target);
+            
         }
 
         // Copy to devices.
@@ -2035,98 +2070,12 @@ void BaseMatrix<scalar_t>::listBcast(
             }
         }
     }
-    
-    std::fprintf(stderr, "*** [Rank %d] BEFORE waitall\n", mpi_rank_);
+*/
 
     slate_mpi_call(
-        MPI_Waitall(send_requests.size(), send_requests.data(), MPI_STATUSES_IGNORE));
-
-    std::fprintf(stderr, "*** [Rank %d] AFTER waitall\n", mpi_rank_);
-
+        MPI_Waitall(isend_requests.size(), isend_requests.data(), MPI_STATUSES_IGNORE));
+      
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-template <typename scalar_t>
-template <Target target>
-std::vector<MPI_Request>
-BaseMatrix<scalar_t>::listIbcast(BcastList& bcast_list, Layout layout, int tag, bool /*is_shared*/)
-{
-    int mpi_size;
-    MPI_Comm_size(mpiComm(), &mpi_size);
-
-    std::vector<MPI_Request> requests;
-
-    for (auto bcast : bcast_list) {
-        int64_t i = std::get<0>(bcast);
-        int64_t j = std::get<1>(bcast);
-        auto submatrices_list = std::get<2>(bcast);
-
-        // Collect the ranks that need this tile
-        std::set<int> bcast_set;
-        int tile_rank = tileRank(i, j);
-        bcast_set.insert(tile_rank);  // root
-        for (auto submatrix : submatrices_list)
-            submatrix.getRanks(&bcast_set);
-
-        std::fprintf(stderr, "*** [Rank %d] i %lld j %lld bcast_set ", mpi_rank_, i, j);
-        for( auto &val : bcast_set) std::fprintf(stderr, "%i ", val);
-        std::fprintf(stderr, "\n");
-
-        // Create a subcommunicator with only participating ranks
-        MPI_Comm subcomm;
-        MPI_Group world_group, sub_group;
-        MPI_Comm_group(mpiComm(), &world_group);
-
-        std::vector<int> ranks_vec(bcast_set.begin(), bcast_set.end());
-        MPI_Group_incl(world_group, ranks_vec.size(), ranks_vec.data(), &sub_group);
-        MPI_Comm_create(mpiComm(), sub_group, &subcomm);
-
-        // Post non-blocking broadcast
-        if (subcomm != MPI_COMM_NULL) {
-
-            // Determine the device first
-            int device = HostNum;
-            if (target == Target::Devices && gpu_aware_mpi())
-                device = tileDevice(i, j);
-
-            // Prepare buffer for receiving on the correct device
-            storage_->tilePrepareToReceive(globalIndex(i, j), device, layout_);
-
-            // Determine the root in subcomm
-            int subcomm_root = std::distance(
-                ranks_vec.begin(),
-                std::find(ranks_vec.begin(), ranks_vec.end(), tile_rank)
-            );
-
-            // Non-blocking broadcast
-            MPI_Request req;
-            at(i, j, device).ibcast(subcomm_root, subcomm, &req);
-            requests.push_back(req);
-        }
-
-        // Free groups (subcomm should be freed by caller after MPI_Waitall)
-        MPI_Group_free(&sub_group);
-        MPI_Group_free(&world_group);
-    }
-
-    return requests;
-}
-
-
 
 //------------------------------------------------------------------------------
 /// Send tile {i, j} of op(A) to all MPI ranks in the list of submatrices

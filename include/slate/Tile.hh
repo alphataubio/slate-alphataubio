@@ -133,7 +133,6 @@ public:
     void recv(int src, MPI_Comm mpi_comm, Layout layout, int tag = 0);
     void irecv(int src, MPI_Comm mpi_comm, Layout layout, int tag, MPI_Request *req);
     void bcast(int bcast_root, MPI_Comm mpi_comm);
-    void ibcast(int bcast_root, MPI_Comm mpi_comm, MPI_Request *req);
 
     /// Returns shallow copy of tile that is transposed.
     template <typename TileType>
@@ -1177,58 +1176,6 @@ void Tile<scalar_t>::bcast(int bcast_root, MPI_Comm mpi_comm)
         }
     }
 }
-
-template <typename scalar_t>
-void Tile<scalar_t>::ibcast(int bcast_root, MPI_Comm mpi_comm, MPI_Request* request)
-{
-    // If no stride.
-    //if (stride_ == mb_) {
-    //    // Use simple bcast.
-    //    int count = mb_*nb_;
-    //
-    //    #pragma omp critical(slate_mpi)
-    //    slate_mpi_call(
-    //        MPI_Bcast(data_, count, mpi_type<scalar_t>::value,
-    //                  bcast_root, mpi_comm));
-    //}
-    //else
-    {
-        // Otherwise, use strided bcast.
-        trace::Block trace_block("MPI_Bcast");
-        // todo: layout
-        int count = layout_ == Layout::ColMajor ? nb_ : mb_;
-        int blocklength = layout_ == Layout::ColMajor ? mb_ : nb_;
-        int stride = stride_;
-        MPI_Datatype newtype;
-
-        #pragma omp critical(slate_mpi)
-        {
-            slate_mpi_call(
-                MPI_Type_vector(
-                    count, blocklength, stride, mpi_type<scalar_t>::value,
-                    &newtype));
-        }
-
-        #pragma omp critical(slate_mpi)
-        {
-            slate_mpi_call(
-                MPI_Type_commit(&newtype));
-        }
-
-        #pragma omp critical(slate_mpi)
-        {
-            slate_mpi_call(
-                MPI_Ibcast(data_, 1, newtype, bcast_root, mpi_comm, request));
-        }
-
-        #pragma omp critical(slate_mpi)
-        {
-            slate_mpi_call(
-                MPI_Type_free(&newtype));
-        }
-    }
-}
-
 
 //------------------------------------------------------------------------------
 /// Set tile data to constants.
