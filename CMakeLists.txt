@@ -422,6 +422,18 @@ message( DEBUG "blas_threaded = ${blas_threaded}" )
 message( "" )
 message( "---------------------------------------- BLAS++" )
 if (NOT TARGET blaspp)
+    # Handle blas=aocl, which blaspp might not support directly,
+    # or requires standard FindBLAS BLA_VENDOR support (CMake 3.27+).
+    if ("${blas}" STREQUAL "aocl")
+        if (blas_threaded)
+             set( BLA_VENDOR "AOCL_mt" )
+        else()
+             set( BLA_VENDOR "AOCL" )
+        endif()
+        # blaspp doesn't know "aocl", so set to auto to use FindBLAS with BLA_VENDOR.
+        set( blas "auto" )
+    endif()
+
     find_package( blaspp QUIET )
     if (blaspp_FOUND)
         message( STATUS "   Found BLAS++: ${blaspp_DIR}" )
