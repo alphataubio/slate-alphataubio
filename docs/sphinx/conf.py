@@ -43,9 +43,9 @@ extensions = [
 
 # Breathe configuration for Doxygen integration
 breathe_projects = {
-    "SLATE": "../../doxygen/xml",
-    "BLASPP": "../../doxygen/xml",
-    "LAPACKPP": "../../doxygen/xml"
+    "SLATE": "../doxygen/xml",
+    "BLASPP": "../doxygen/xml",
+    "LAPACKPP": "../doxygen/xml"
 }
 breathe_default_project = "SLATE"
 
