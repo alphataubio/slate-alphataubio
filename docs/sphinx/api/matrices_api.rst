@@ -85,10 +85,12 @@ Tiles
 Auxiliary Classes
 -----------------
 
-.. doxygenstruct:: slate::Pivots
+.. doxygenclass:: slate::Pivot
    :project: SLATE
    :members:
 
-.. doxygenclass:: slate::TriangularFactors
+.. doxygentypedef:: slate::Pivots
    :project: SLATE
-   :members:
+
+.. doxygentypedef:: slate::TriangularFactors
+   :project: SLATE
