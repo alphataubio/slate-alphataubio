@@ -173,3 +173,9 @@ The build infrastructure is **production-ready**:
 - **Quality**: Comprehensive @param docs with examples
 
 The foundation is solid. All public headers are documented!
+
+## Recent Updates
+- Added comprehensive Examples section (15 examples)
+- Includes pedagogical explanations and source code
+- Supports C and Fortran examples where available
+
