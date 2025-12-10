@@ -10,38 +10,50 @@ Solve overdetermined or underdetermined linear systems using QR or LQ factorizat
 Least Squares Solve
 --------------------
 
-.. doxygenfunction:: slate::least_squares_solve
+Simplified API
+^^^^^^^^^^^^^^
+.. doxygengroup:: least_squares
    :project: SLATE
+   :content-only:
+   :members:
 
-.. doxygenfunction:: slate::gels
+Standard API
+^^^^^^^^^^^^
+.. doxygengroup:: gels
    :project: SLATE
+   :content-only:
+   :members:
 
 QR Factorization
 ----------------
 
-.. doxygenfunction:: slate::qr_factor
+Simplified API
+^^^^^^^^^^^^^^
+.. doxygengroup:: qr_factor
    :project: SLATE
+   :content-only:
+   :members:
 
-.. doxygenfunction:: slate::geqrf
+Standard API
+^^^^^^^^^^^^
+.. doxygengroup:: qr
    :project: SLATE
-
-.. doxygenfunction:: slate::qr_multiply_by_q
-   :project: SLATE
-
-.. doxygenfunction:: slate::unmqr
-   :project: SLATE
+   :content-only:
+   :members:
 
 LQ Factorization
 ----------------
 
-.. doxygenfunction:: slate::lq_factor
+Simplified API
+^^^^^^^^^^^^^^
+.. doxygengroup:: lq_factor
    :project: SLATE
+   :content-only:
+   :members:
 
-.. doxygenfunction:: slate::gelqf
+Standard API
+^^^^^^^^^^^^
+.. doxygengroup:: lq
    :project: SLATE
-
-.. doxygenfunction:: slate::lq_multiply_by_q
-   :project: SLATE
-
-.. doxygenfunction:: slate::unmlq
-   :project: SLATE
+   :content-only:
+   :members:
