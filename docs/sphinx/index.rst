@@ -104,7 +104,31 @@ Resources
    :caption: EXAMPLES
    :hidden:
 
-   examples/index
+   examples/overview
+   examples/ex01_matrix
+   examples/ex02_conversion
+   examples/ex03_submatrix
+   examples/ex04_norm
+   examples/ex05_blas
+   examples/ex06_linear_system_lu
+   examples/ex07_linear_system_cholesky
+   examples/ex08_linear_system_indefinite
+   examples/ex09_least_squares
+   examples/ex10_svd
+   examples/ex11_hermitian_eig
+   examples/ex12_generalized_hermitian_eig
+   examples/ex13_non_uniform_block_size
+   examples/ex14_scalapack_gemm
+   examples/ex15_set_matrix
+   examples/building
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: DEVELOPER GUIDE
+   :hidden:
+
+   developer_guide/index
 
 
 .. toctree::
