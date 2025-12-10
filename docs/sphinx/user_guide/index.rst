@@ -1,12 +1,9 @@
-User Guide
-==========
+Overview
+========
 
 This guide provides comprehensive documentation for using SLATE (Software for Linear Algebra 
 Targeting Exascale). SLATE provides fundamental dense linear algebra capabilities for 
 high-performance computing systems with multi-core processors and hardware accelerators.
-
-Overview
---------
 
 SLATE is a library providing dense linear algebra capabilities for high-performance systems 
 supporting large-scale distributed-nodes with accelerators. SLATE provides coverage of existing 

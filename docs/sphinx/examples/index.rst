@@ -1,5 +1,6 @@
-Examples
-========
+
+Overview
+--------
 
 These are designed as minimal, standalone examples to demonstrate how to include, call, and link with SLATE.
 
