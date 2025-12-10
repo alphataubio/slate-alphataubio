@@ -26,6 +26,12 @@ adequately retrofitted for modern accelerated architectures.
 
         Complete API documentation for all SLATE functions and classes.
 
+    .. grid-item-card:: 💡 Examples
+        :link: examples/index
+        :link-type: doc
+
+        Standalone examples demonstrating SLATE features and usage.
+
     .. grid-item-card:: 🧪 Testing & Tuning
         :link: user_guide/testing
         :link-type: doc
@@ -91,6 +97,14 @@ Resources
    :hidden:
 
    api/index
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: EXAMPLES
+   :hidden:
+
+   examples/index
 
 
 .. toctree::
