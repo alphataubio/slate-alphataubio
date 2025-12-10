@@ -79,10 +79,10 @@ Warnings: 5 minor (now resolved - stub files created)
 ## Current Statistics
 
 - **Infrastructure**: 100% complete ✅
-- **Doxygen comments added**: ~200 functions (simplified_api.hh + slate.hh)
+- **Doxygen comments added**: Most public APIs documented (simplified_api.hh, slate.hh, Matrix classes, Enums, Types, Tile)
 - **RST files created**: 9 (6 API + 3 stubs)
 - **Build system**: Fully automated
-- **Remaining documentation work**: Matrix classes, Enums, Types, and internal headers
+- **Remaining documentation work**: Internal headers and utility functions
 
 ## Testing
 
@@ -97,37 +97,20 @@ Output location: `_build/html/index.html`
 
 ## Next Steps for Full Documentation
 
-### High Priority Headers (User-Facing APIs)
-1. **Matrix.hh** - Matrix class
-   - Constructors
-   - operator(), at()
-   - sub(), slice()
-   - tileRank(), tileMb(), tileNb()
-   - All member methods
-
-2. **enums.hh** - Enumerations
-   - Layout, Op, Uplo, Diag, Side
-   - Norm, Target, GridOrder
-   - Method enumerations
-
-3. **types.hh** - Type definitions
-   - Options class methods
-   - Pivots, TriangularFactors
-   - Type traits
-
-### Medium Priority Headers
-4. **HermitianMatrix.hh**, **SymmetricMatrix.hh**, **TriangularMatrix.hh**
-5. **BandMatrix.hh** and band variants
-6. **Tile.hh** - Tile class
-
 ### Lower Priority (Advanced/Internal)
-7. **Exception.hh** - Exception classes
-8. **func.hh** - Utility functions
-9. Internal headers (as needed)
+1. **Exception.hh** - Exception classes
+2. **func.hh** - Utility functions
+3. Internal headers (as needed)
 
 ## Completed Headers
 - **simplified_api.hh** ✅
 - **slate.hh** ✅
+- **Matrix.hh** (including BaseMatrix.hh) ✅
+- **enums.hh** ✅
+- **types.hh** ✅
+- **HermitianMatrix.hh**, **SymmetricMatrix.hh**, **TriangularMatrix.hh** ✅
+- **BandMatrix.hh** and band variants ✅
+- **Tile.hh** ✅
 
 ## Documentation Template
 
