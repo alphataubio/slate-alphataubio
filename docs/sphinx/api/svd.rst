@@ -10,20 +10,10 @@ Compute the singular value decomposition :math:`A = U \Sigma V^H`.
 SVD Functions
 -------------
 
-.. doxygenfunction:: slate::svd
+.. doxygengroup:: svd
    :project: SLATE
-
-.. doxygenfunction:: slate::gesvd
-   :project: SLATE
-
-.. doxygenfunction:: slate::gesdd
-   :project: SLATE
-
-SVD with Values Only
---------------------
-
-.. doxygenfunction:: slate::svd_vals
-   :project: SLATE
+   :content-only:
+   :members:
 
 Notes
 -----
