@@ -91,13 +91,6 @@ Resources
    :hidden:
 
    api/index
-   api/blas
-   api/linear_systems
-   api/least_squares
-   api/eigenvalues
-   api/svd
-   api/matrices_api
-   api/enums
 
 
 .. toctree::
