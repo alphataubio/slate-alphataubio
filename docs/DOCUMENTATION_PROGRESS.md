@@ -21,7 +21,7 @@ The documentation build completed successfully with only minor warnings about mi
 
 - ✅ Updated `Makefile`:
   - Auto-creates Python venv in `_build/venv`
-  - Builds doxygen XML before sphinx  
+  - Builds doxygen XML before sphinx
   - Cleans doxygen outputs with `make clean`
   - Added `.PHONY` targets
 
@@ -97,20 +97,27 @@ Output location: `_build/html/index.html`
 
 ## Next Steps for Full Documentation
 
-### Lower Priority (Advanced/Internal)
-1. **Exception.hh** - Exception classes
-2. **func.hh** - Utility functions
-3. Internal headers (as needed)
+### Internal/Developer Headers (Low Priority)
+1. Internal headers in `include/slate/internal/`
+2. C API headers in `include/slate/c_api/` (mostly wrappers)
 
 ## Completed Headers
 - **simplified_api.hh** ✅
 - **slate.hh** ✅
 - **Matrix.hh** (including BaseMatrix.hh) ✅
+- **TrapezoidMatrix.hh** (including BaseTrapezoidMatrix.hh) ✅
 - **enums.hh** ✅
 - **types.hh** ✅
 - **HermitianMatrix.hh**, **SymmetricMatrix.hh**, **TriangularMatrix.hh** ✅
 - **BandMatrix.hh** and band variants ✅
 - **Tile.hh** ✅
+- **Exception.hh** ✅
+- **func.hh** ✅
+- **print.hh** ✅
+- **generate_matrix.hh** ✅
+- **config.hh** ✅
+- **Tile_aux.hh** ✅
+- **Tile_blas.hh** ✅
 
 ## Documentation Template
 
@@ -118,7 +125,7 @@ Use this pattern for all functions:
 
 ```cpp
 //-----------------------------------------
-/// Brief one-line description with math: \\( C = \\alpha A B + \\beta C \\)
+/// Brief one-line description with math: \( C = \alpha A B + \beta C \)
 ///
 /// Detailed description explaining what the function does,
 /// any special cases, and usage notes.
@@ -126,7 +133,7 @@ Use this pattern for all functions:
 /// @param[in] name
 ///     Description of input parameter
 ///
-/// @param[in,out] name  
+/// @param[in,out] name
 ///     On entry, description. On exit, description
 ///
 /// @param[out] name
@@ -160,9 +167,9 @@ The build infrastructure is **production-ready**:
 
 ## Estimated Remaining Work
 
-- **Time to document all public APIs**: ~4-6 hours
-- **Approach**: Systematic, file-by-file
-- **Priority**: User-facing APIs first
+- **Time to document all public APIs**: 0 hours (Complete) ✅
+- **Approach**: Maintenance mode
+- **Priority**: Keep docs in sync with code
 - **Quality**: Comprehensive @param docs with examples
 
-The foundation is solid. Now it's systematic documentation work across the remaining headers!
+The foundation is solid. All public headers are documented!
