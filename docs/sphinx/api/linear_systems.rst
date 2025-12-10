@@ -7,78 +7,53 @@ SLATE provides comprehensive routines for solving linear systems :math:`AX = B`.
    :local:
    :depth: 2
 
-General (LU)
-------------
+LU Factorization (General)
+--------------------------
 
+Simplified API
+^^^^^^^^^^^^^^
 .. doxygengroup:: lu_solve
    :project: SLATE
    :content-only:
    :members:
 
-Positive Definite (Cholesky)
------------------------------
+Standard API
+^^^^^^^^^^^^
+.. doxygengroup:: lu
+   :project: SLATE
+   :content-only:
+   :members:
 
+Cholesky Factorization (Positive Definite)
+------------------------------------------
+
+Simplified API
+^^^^^^^^^^^^^^
 .. doxygengroup:: chol_solve
    :project: SLATE
    :content-only:
    :members:
 
-Symmetric Indefinite
---------------------
+Standard API
+^^^^^^^^^^^^
+.. doxygengroup:: chol
+   :project: SLATE
+   :content-only:
+   :members:
 
+Indefinite Factorization (Symmetric/Hermitian)
+-----------------------------------------------
+
+Simplified API
+^^^^^^^^^^^^^^
 .. doxygengroup:: indefinite_solve
    :project: SLATE
    :content-only:
    :members:
 
-Triangular Systems
-------------------
-
-.. doxygengroup:: triangular_solve
+Standard API
+^^^^^^^^^^^^
+.. doxygengroup:: sysv
    :project: SLATE
    :content-only:
    :members:
-
-LU Factorization
-----------------
-
-.. doxygenfunction:: slate::lu_factor
-   :project: SLATE
-
-.. doxygenfunction:: slate::lu_solve_using_factor
-   :project: SLATE
-
-.. doxygenfunction:: slate::lu_inverse_using_factor
-   :project: SLATE
-
-.. doxygenfunction:: slate::lu_rcondest_using_factor
-   :project: SLATE
-
-Cholesky Factorization
------------------------
-
-.. doxygenfunction:: slate::chol_factor
-   :project: SLATE
-
-.. doxygenfunction:: slate::chol_solve_using_factor
-   :project: SLATE
-
-.. doxygenfunction:: slate::chol_inverse_using_factor
-   :project: SLATE
-
-.. doxygenfunction:: slate::chol_rcondest_using_factor
-   :project: SLATE
-
-Symmetric Indefinite Factorization
------------------------------------
-
-.. doxygenfunction:: slate::indefinite_factor
-   :project: SLATE
-
-.. doxygenfunction:: slate::indefinite_solve_using_factor
-   :project: SLATE
-
-BLAS-like Functions (gesv, posv, etc.)
----------------------------------------
-
-See :doc:`blas` for the traditional BLAS/LAPACK-named functions.
