@@ -27,7 +27,12 @@ $(VENV):
 		deactivate;\
 	)
 
-html: $(VENV) conf.py
+# Build doxygen XML before sphinx
+doxygen:
+	@echo "Building Doxygen XML documentation..."
+	@cd ../.. && doxygen docs/doxygen/doxyfile.conf
+
+html: $(VENV) conf.py doxygen
 	@(\
 		. $(VENV)/bin/activate ;\
 		PYTHONPATH=.. $(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O) ;\
@@ -41,5 +46,6 @@ help:
 clean:
 	@echo "Removing all generated documentation and virtualenv..."
 	@rm -rf "$(BUILDDIR)" .doctrees .coverage htmlcov *.pyc *.pyo __pycache__
+	@rm -rf ../../docs/doxygen/html ../../docs/doxygen/xml
 
-.PHONY: help html clean
+.PHONY: help html clean doxygen

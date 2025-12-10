@@ -9,12 +9,40 @@
 namespace slate {
 
 //------------------------------------------------------------------------------
-// Level 3 BLAS and LAPACK auxiliary
+/// @defgroup multiply Matrix-matrix multiplication routines
+/// @brief Simplified interface for matrix-matrix products
+///
+/// These functions provide a simplified interface to BLAS-3 matrix-matrix 
+/// multiplication routines, automatically dispatching to the appropriate
+/// underlying function (gemm, hemm, symm, etc.) based on matrix types.
+///
+/// @{
 
 //-----------------------------------------
-// multiply()
-
-// gbmm
+/// Matrix-matrix multiply: \( C = \alpha A B + \beta C \)
+///
+/// Band matrix times general matrix.
+///
+/// @param[in] alpha
+///     Scalar multiplier for A*B product
+///
+/// @param[in] A
+///     Band matrix operand
+///
+/// @param[in] B
+///     General matrix operand
+///
+/// @param[in] beta
+///     Scalar multiplier for C
+///
+/// @param[in,out] C
+///     On entry, the matrix C. On exit, overwritten by \( \alpha A B + \beta C \)
+///
+/// @param[in] opts
+///     Additional options (target, lookahead, etc.)
+///
+/// @ingroup multiply
+///
 template <typename scalar_t>
 void multiply(
     scalar_t alpha, BandMatrix<scalar_t>& A,
@@ -25,7 +53,33 @@ void multiply(
     gbmm(alpha, A, B, beta, C, opts);
 }
 
-// gemm
+//-----------------------------------------
+/// Matrix-matrix multiply: \( C = \alpha A B + \beta C \)
+///
+/// General matrix times general matrix (GEMM).
+///
+/// @param[in] alpha
+///     Scalar multiplier for A*B product
+///
+/// @param[in] A
+///     General matrix operand, m-by-k
+///
+/// @param[in] B
+///     General matrix operand, k-by-n
+///
+/// @param[in] beta
+///     Scalar multiplier for C
+///
+/// @param[in,out] C
+///     On entry, m-by-n matrix. On exit, overwritten by \( \alpha A B + \beta C \)
+///
+/// @param[in] opts
+///     Additional options:
+///     - target: Target device (host, devices)
+///     - lookahead: Number of blocks to lookahead (default 1)
+///
+/// @ingroup multiply
+///
 template <typename scalar_t>
 void multiply(
     scalar_t alpha, Matrix<scalar_t>& A,
@@ -36,7 +90,17 @@ void multiply(
     gemm(alpha, A, B, beta, C, opts);
 }
 
-// Left hbmm
+//-----------------------------------------
+/// Hermitian band matrix multiply (left): \( C = \alpha A B + \beta C \)
+///
+/// @param[in] alpha Scalar multiplier
+/// @param[in] A Hermitian band matrix (left operand)
+/// @param[in] B General matrix
+/// @param[in] beta Scalar multiplier for C
+/// @param[in,out] C On exit, \( \alpha A B + \beta C \)
+/// @param[in] opts Additional options
+/// @ingroup multiply
+///
 template <typename scalar_t>
 void multiply(
     scalar_t alpha, HermitianBandMatrix<scalar_t>& A,
@@ -47,7 +111,17 @@ void multiply(
     hbmm(Side::Left, alpha, A, B, beta, C, opts);
 }
 
-// Right hbmm
+//-----------------------------------------
+/// Hermitian band matrix multiply (right): \( C = \alpha A B + \beta C \)
+///
+/// @param[in] alpha Scalar multiplier
+/// @param[in] A General matrix
+/// @param[in] B Hermitian band matrix (right operand)
+/// @param[in] beta Scalar multiplier for C
+/// @param[in,out] C On exit, \( \alpha A B + \beta C \)
+/// @param[in] opts Additional options
+/// @ingroup multiply
+///
 template <typename scalar_t>
 void multiply(
     scalar_t alpha,              Matrix<scalar_t>& A,
@@ -58,7 +132,19 @@ void multiply(
     hbmm(Side::Right, alpha, B, A, beta, C, opts);
 }
 
-// Left hemm
+//-----------------------------------------
+/// Hermitian matrix multiply (left): \( C = \alpha A B + \beta C \)
+///
+/// where A is Hermitian.
+///
+/// @param[in] alpha Scalar multiplier
+/// @param[in] A Hermitian matrix (left operand)
+/// @param[in] B General matrix
+/// @param[in] beta Scalar multiplier for C
+/// @param[in,out] C On exit, \( \alpha A B + \beta C \)
+/// @param[in] opts Additional options
+/// @ingroup multiply
+///
 template <typename scalar_t>
 void multiply(
     scalar_t alpha, HermitianMatrix<scalar_t>& A,
@@ -69,7 +155,19 @@ void multiply(
     hemm(Side::Left, alpha, A, B, beta, C, opts);
 }
 
-// Right hemm
+//-----------------------------------------
+/// Hermitian matrix multiply (right): \( C = \alpha A B + \beta C \)
+///
+/// where B is Hermitian.
+///
+/// @param[in] alpha Scalar multiplier
+/// @param[in] A General matrix
+/// @param[in] B Hermitian matrix (right operand)
+/// @param[in] beta Scalar multiplier for C
+/// @param[in,out] C On exit, \( \alpha A B + \beta C \)
+/// @param[in] opts Additional options
+/// @ingroup multiply
+///
 template <typename scalar_t>
 void multiply(
     scalar_t alpha,          Matrix<scalar_t>& A,
@@ -80,7 +178,19 @@ void multiply(
     hemm(Side::Right, alpha, B, A, beta, C, opts);
 }
 
-// Left symm
+//-----------------------------------------
+/// Symmetric matrix multiply (left): \( C = \alpha A B + \beta C \)
+///
+/// where A is symmetric.
+///
+/// @param[in] alpha Scalar multiplier
+/// @param[in] A Symmetric matrix (left operand)
+/// @param[in] B General matrix
+/// @param[in] beta Scalar multiplier for C
+/// @param[in,out] C On exit, \( \alpha A B + \beta C \)
+/// @param[in] opts Additional options
+/// @ingroup multiply
+///
 template <typename scalar_t>
 void multiply(
     scalar_t alpha, SymmetricMatrix<scalar_t>& A,
@@ -91,7 +201,19 @@ void multiply(
     symm(Side::Left, alpha, A, B, beta, C, opts);
 }
 
-// Right symm
+//-----------------------------------------
+/// Symmetric matrix multiply (right): \( C = \alpha A B + \beta C \)
+///
+/// where B is symmetric.
+///
+/// @param[in] alpha Scalar multiplier
+/// @param[in] A General matrix
+/// @param[in] B Symmetric matrix (right operand)
+/// @param[in] beta Scalar multiplier for C
+/// @param[in,out] C On exit, \( \alpha A B + \beta C \)
+/// @param[in] opts Additional options
+/// @ingroup multiply
+///
 template <typename scalar_t>
 void multiply(
     scalar_t alpha,          Matrix<scalar_t>& A,
@@ -101,6 +223,9 @@ void multiply(
 {
     symm(Side::Right, alpha, B, A, beta, C, opts);
 }
+
+/// @}
+// End of multiply group
 
 //-----------------------------------------
 // triangular_multiply()

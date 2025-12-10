@@ -43,9 +43,16 @@ extensions = [
 
 # Breathe configuration for Doxygen integration
 breathe_projects = {
-    "SLATE": "../doxygen/xml"
+    "SLATE": "../../doxygen/xml",
+    "BLASPP": "../../doxygen/xml",
+    "LAPACKPP": "../../doxygen/xml"
 }
 breathe_default_project = "SLATE"
+
+# Breathe configuration options
+breathe_default_members = ('members', 'undoc-members')
+breathe_show_define_initializer = True
+breathe_show_enumvalue_initializer = True
 
 # Support for both RST and Markdown
 source_suffix = {

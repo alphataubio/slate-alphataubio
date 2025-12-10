@@ -52,3 +52,5 @@ unit_test/test_TriangularBandMatrix
 unit_test/test_util
 wiki/
 /docs/sphinx/_build
+/docs/doxygen/html
+/docs/doxygen/xml
