@@ -36,9 +36,10 @@ Code Explanation
 Solves :math:`Ax=B` where `A` is symmetric/Hermitian but not positive definite.
 - The **simplified API** (`indefinite_solve`) automatically handles the allocation of the auxiliary workspaces `T` and `H` and pivot vectors.
 - The **traditional API** (`hesv` for Hermitian, `sysv` for Symmetric) requires you to pre-allocate:
-    - `T`: A band matrix to store the tridiagonal factor.
-    - `H`: A matrix for internal workspace.
-    - `pivots`, `pivots2`: Vectors to store pivot information.
+
+  - `T`: A band matrix to store the tridiagonal factor.
+  - `H`: A matrix for internal workspace.
+  - `pivots`, `pivots2`: Vectors to store pivot information.
 
 **Explicit Factorization (Lines 78-83)**
 
