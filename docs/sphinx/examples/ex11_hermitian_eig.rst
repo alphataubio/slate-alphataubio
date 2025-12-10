@@ -43,6 +43,7 @@ Code Explanation
     slate::heev( A, Lambda );      // traditional API
 
 Computes only the eigenvalues. `A` is overwritten by the tridiagonal factors (if `heev` logic is followed, though conceptually `A` is destroyed). `Lambda` contains the eigenvalues in ascending order.
+
 - Note: `heev` stands for Hermitian EigenValues.
 
 **Eigenvalues and Eigenvectors (Lines 63-68)**
@@ -54,5 +55,6 @@ Computes only the eigenvalues. `A` is overwritten by the tridiagonal factors (if
     slate::heev( A, Lambda, Z );   // traditional API
 
 Computes both eigenvalues and eigenvectors.
+
 - `Z` is overwritten with the eigenvectors.
 - The columns of `Z` correspond to the eigenvalues in `Lambda`.

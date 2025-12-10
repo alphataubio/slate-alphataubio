@@ -30,6 +30,7 @@ Code Explanation
     slate::posv( A, B );        // traditional API
 
 Solves :math:`Ax=B` for symmetric/Hermitian positive definite `A`.
+
 - Requires `A` to be defined as `HermitianMatrix` or `SymmetricMatrix`.
 - `A` is overwritten by the Cholesky factor :math:`L` (if `Uplo::Lower`) or :math:`U` (if `Uplo::Upper`).
 - `B` is overwritten by the solution.
@@ -61,6 +62,7 @@ Similar to the LU case, this routine factors `A` in lower precision and iterativ
     slate::chol_inverse_using_factor( A );
 
 Computes :math:`A^{-1}` for a positive definite matrix.
+
 1.  Factorize.
 2.  Call `chol_inverse_using_factor` (potri). `A` is overwritten by the inverse.
 

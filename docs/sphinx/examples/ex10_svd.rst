@@ -50,6 +50,7 @@ If you only need the singular values (not the vectors `U` and `V`), use `svd_val
     slate::svd( A, Sigma, U, VH );
 
 To compute vectors:
+
 - `U`: Left singular vectors. Dimensions `m` by `min(m, n)`.
 - `VH`: Right singular vectors (transposed). Dimensions `min(m, n)` by `n`.
 - Note: This example computes the **reduced** SVD.

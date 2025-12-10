@@ -34,6 +34,7 @@ Code Explanation
     slate::hesv( A, pivots, T, pivots2, H, B );
 
 Solves :math:`Ax=B` where `A` is symmetric/Hermitian but not positive definite.
+
 - The **simplified API** (`indefinite_solve`) automatically handles the allocation of the auxiliary workspaces `T` and `H` and pivot vectors.
 - The **traditional API** (`hesv` for Hermitian, `sysv` for Symmetric) requires you to pre-allocate:
 
@@ -49,6 +50,7 @@ Solves :math:`Ax=B` where `A` is symmetric/Hermitian but not positive definite.
     slate::indefinite_solve_using_factor( A, pivots, T, pivots2, B );
 
 Separates the factorization (Aasen's algorithm) from the solve.
+
 - `indefinite_factor` (hetrf): Computes the :math:`LTL^H` factorization.
 - `indefinite_solve_using_factor` (hetrs): Solves the system using the factors.
 - Requires managing the workspaces `T` and `H` explicitly even in the simplified API wrapper if you want to keep the factors.

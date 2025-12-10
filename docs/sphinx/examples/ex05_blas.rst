@@ -30,9 +30,11 @@ Code Explanation
     slate::gemm( alpha, A, B, beta, C );      // traditional API
 
 Here we perform the standard operation :math:`C = \alpha AB + \beta C`.
+
 - `A` is an `m` by `k` matrix.
 - `B` is a `k` by `n` matrix.
 - `C` is an `m` by `n` matrix.
+
 SLATE provides both a descriptive `multiply` routine and the traditional BLAS-named `gemm`. They are equivalent.
 
 **GPU Execution with Options (Lines 43-52)**
@@ -48,6 +50,7 @@ SLATE provides both a descriptive `multiply` routine and the traditional BLAS-na
     }
 
 Most SLATE routines accept an `Options` map as the final argument. Here we:
+
 - Set `Target::Devices` to offload computation to GPUs.
 - Set `Lookahead` to 2 to overlap communication and computation.
 
@@ -69,6 +72,7 @@ To compute :math:`C = \alpha A^T B^H + \beta C`, we simply create transposed vie
     slate::symm( slate::Side::Left, alpha, A, B, beta, C );   // traditional
 
 When `A` is a `SymmetricMatrix` (or `HermitianMatrix`), `multiply` automatically dispatches to the efficient symmetric/Hermitian algorithm (`symm`/`hemm`).
+
 - `Side::Left` means :math:`C = \alpha A B + \beta C`.
 - `Side::Right` means :math:`C = \alpha B A + \beta C` (demonstrated in lines 141-147).
 

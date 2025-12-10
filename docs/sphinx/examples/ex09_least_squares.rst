@@ -35,6 +35,7 @@ Code Explanation
     slate::least_squares_solve( A, BX );
 
 For overdetermined systems (:math:`m \ge n`):
+
 - `A` is `m` by `n`.
 - The RHS matrix `BX` must be large enough to hold both the input `B` (`m` rows) and the result `X` (conceptually `n` rows, though in the algorithm `B` is overwritten in place). Since `m >= n`, `m` rows is sufficient.
 - `least_squares_solve` (gels) overwrites `A` with QR factors and `BX` with the solution.
@@ -49,5 +50,6 @@ For overdetermined systems (:math:`m \ge n`):
 
 For underdetermined systems (:math:`m < n`), we typically solve :math:`A x = B` (minimum norm solution).
 SLATE's `gels` routine expects an `m` by `n` matrix where `m >= n`. To solve the underdetermined case :math:`A x = B` where `A` is fat (`m < n`), we mathematically transform this into a problem involving :math:`A^H` (which is tall).
+
 - The example demonstrates solving :math:`A^H X = B` where `A` is tall (`m > n`), which effectively simulates an underdetermined system from the perspective of the transposed matrix.
 - `BX` must be size `max(m, n)` by `nrhs`. Since the solution vector `X` will be larger than the input `B`, `BX` provides the necessary space.

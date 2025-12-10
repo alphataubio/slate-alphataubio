@@ -32,6 +32,7 @@ Code Explanation
         A( m, n, nb, grid_p, grid_q, MPI_COMM_WORLD );
 
 Here, we construct a standard general matrix `A`. Note that:
+
 - `m` and `n` are the global dimensions (rows, columns).
 - `nb` is the block size (tile size).
 - `grid_p` and `grid_q` define the MPI process grid dimensions.
@@ -48,6 +49,7 @@ We can also create matrices with rectangular tiles (specifying `mb` and `nb`) or
     A.insertLocalTiles( slate::Target::Host );
 
 Since the constructor creates an empty shell, we must explicitly allocate memory for the tiles that belong to this MPI rank. `insertLocalTiles` is the standard way to do this.
+
 - `Target::Host` allocates memory on the CPU.
 - `Target::Devices` (seen in lines 71-92) allocates memory on GPU devices if available.
 
@@ -84,6 +86,7 @@ This is the simplified, preferred way to wrap legacy ScaLAPACK data. It handles 
     auto AH = conj_transpose( A );
 
 SLATE operations like transposition are typically metadata operations. `AT` is a **view** of `A`. No data is copied or moved.
+
 - `AT` has its operation flag set to `Op::Trans`.
 - Accessing `AT(i, j)` effectively accesses `A(j, i)` with transposition applied on the fly.
 - This allows efficient passing of transposed arguments to BLAS routines (like `gemm`) without overhead.
@@ -103,6 +106,7 @@ SLATE operations like transposition are typically metadata operations. `AT` is a
     }
 
 Direct element access in distributed memory requires care:
+
 1.  We iterate over global tiles `(i, j)`.
 2.  We check `A.tileIsLocal(i, j)` to ensure the current rank owns the data.
 3.  We acquire the tile `T` on the host.

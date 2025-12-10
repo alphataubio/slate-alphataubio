@@ -41,6 +41,7 @@ We start with a standard, general `m` by `n` matrix `A`. This holds the underlyi
         Lz( slate::Uplo::Lower, slate::Diag::Unit, A );
 
 We create a `TrapezoidMatrix` named `Lz` from `A`.
+
 - This is a **shallow copy**. `Lz` points to the same data tiles as `A`.
 - `Uplo::Lower` specifies we are interested in the lower trapezoidal part.
 - `Diag::Unit` specifies that the diagonal elements are implicitly assumed to be 1.0 (they are not accessed/modified).
@@ -65,6 +66,7 @@ Triangular, Symmetric, and Hermitian matrices **must be square**. If `A` is rect
         U( slate::Uplo::Upper, slate::Diag::NonUnit, A_square );
 
 Here we create Lower (`L`) and Upper (`U`) triangular views.
+
 - `L` effectively sees only the lower triangle of `A_square`.
 - `U` sees the upper triangle.
 - These are used for operations like triangular solves (TRSM) or Cholesky factorization.

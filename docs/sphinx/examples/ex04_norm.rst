@@ -35,6 +35,7 @@ Code Explanation
     // ...
 
 Computes norms for a standard general matrix `A`.
+
 - `Norm::One` (1-norm): Maximum absolute column sum. :math:`\max_j \sum_i |a_{ij}|`.
 - `Norm::Inf` (Infinity-norm): Maximum absolute row sum. :math:`\max_i \sum_j |a_{ij}|`.
 - `Norm::Max` (Max-norm): Maximum absolute value of any element. :math:`\max_{i,j} |a_{ij}|`.

@@ -27,6 +27,7 @@ Code Explanation
     auto B = A.sub( i1, i2, j1, j2 );
 
 The `sub` method creates a view into the matrix using **block (tile) coordinates**.
+
 - `i1, i2`: Start and end block row indices (inclusive).
 - `j1, j2`: Start and end block column indices (inclusive).
 - If `A` has tiles of size `nb`, `sub(1, 1, ...)` starts at global row `nb`.
@@ -47,6 +48,7 @@ The `sub` method creates a view into the matrix using **block (tile) coordinates
     B = A.slice( row1, row2, col1, col2 );
 
 The `slice` method creates a view using **global element indices** (0-based row/column indices).
+
 - `row1, row2`: Start and end row indices (inclusive).
 - `col1, col2`: Start and end column indices (inclusive).
 - **Important**: Slicing allows for arbitrary boundaries. However, many SLATE algorithms require matrix views to be aligned with tile boundaries. If you slice in the middle of a tile, you may be restricted in which operations you can perform on that view.

@@ -45,6 +45,7 @@ Code Explanation
     slate::hegv( 1, A, B, Lambda );
 
 Solves :math:`Ax = \lambda Bx`.
+
 - `A` is overwritten.
 - `B` is overwritten by its Cholesky factor.
 
