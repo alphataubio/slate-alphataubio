@@ -67,9 +67,8 @@ Grid Order
 Options
 -------
 
-.. doxygenclass:: slate::Options
+.. doxygentypedef:: slate::Options
    :project: SLATE
-   :members:
 
 .. doxygenenum:: slate::Option
    :project: SLATE
@@ -102,10 +101,8 @@ Type Traits
    :project: SLATE
    :members:
 
-.. doxygenstruct:: slate::real_type
+.. doxygentypedef:: slate::real_type
    :project: SLATE
-   :members:
 
-.. doxygenstruct:: slate::scalar_type
+.. doxygentypedef:: slate::scalar_type
    :project: SLATE
-   :members:
