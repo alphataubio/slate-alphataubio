@@ -55,22 +55,22 @@ Direction
 Target
 ^^^^^^
 
-.. doxygenenum:: slate::Target
+.. doxygenenum:: Target
    :project: SLATE
 
 Grid Order
 ^^^^^^^^^^
 
-.. doxygenenum:: slate::GridOrder
+.. doxygenenum:: GridOrder
    :project: SLATE
 
 Options
 -------
 
-.. doxygentypedef:: slate::Options
+.. doxygentypedef:: Options
    :project: SLATE
 
-.. doxygenenum:: slate::Option
+.. doxygenenum:: Option
    :project: SLATE
 
 Method Enumerations
@@ -101,8 +101,7 @@ Type Traits
    :project: SLATE
    :members:
 
-.. doxygentypedef:: slate::real_type
+.. doxygenclass:: slate::mpi_type
    :project: SLATE
+   :members:
 
-.. doxygentypedef:: slate::scalar_type
-   :project: SLATE
