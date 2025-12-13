@@ -86,6 +86,7 @@ Contents
 
 .. toctree::
    :maxdepth: 2
+   :titlesonly:
 
    blas
    linear_systems
