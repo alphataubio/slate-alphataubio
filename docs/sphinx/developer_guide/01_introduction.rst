@@ -1,3 +1,6 @@
+
+The SLATE Developers' Guide provides in-depth information on SLATE's architecture, design principles, and implementation details. It is intended for developers contributing to SLATE or advanced users who want to understand the library's internal workings.
+
 Introduction
 ============
 
