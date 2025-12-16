@@ -186,17 +186,8 @@ Example:
 See Also
 --------
 
-- :doc:`../user_guide/operations` - User guide with examples
-- :doc:`../user_guide/matrices` - Matrix creation and manipulation
+- :doc:`../../user_guide/operations` - User guide with examples
+- :doc:`../../user_guide/matrices` - Matrix creation and manipulation
 - `Online API Reference <https://icl.bitbucket.io/slate/>`_ - Doxygen-generated documentation
 
-blaspp
-======
 
-FIXME
-
-
-lapackpp
-========
-
-FIXME
