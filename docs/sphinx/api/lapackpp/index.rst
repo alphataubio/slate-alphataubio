@@ -1,5 +1,5 @@
-LAPACK++ API Reference
-======================
+lapackpp
+========
 
 LAPACK++ provides a modern C++11 interface to LAPACK (Linear Algebra PACKage).
 
@@ -14,7 +14,7 @@ LAPACK++ provides a modern C++11 interface to LAPACK (Linear Algebra PACKage).
    factorizations
    linear_systems
    least_squares
-   eigenvalue
+   eigenvalues
    svd
    auxiliary
 

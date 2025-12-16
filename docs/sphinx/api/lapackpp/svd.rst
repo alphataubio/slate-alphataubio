@@ -171,6 +171,6 @@ Filter small singular values to solve ill-conditioned systems
 See Also
 --------
 
-- :doc:`eigenvalue` - Eigenvalue problems
+- :doc:`eigenvalues` - Eigenvalue problems
 - :doc:`least_squares` - Least squares solvers
 - :doc:`util` - Job and Range enumerations

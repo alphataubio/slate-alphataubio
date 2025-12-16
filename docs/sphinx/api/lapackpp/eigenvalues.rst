@@ -1,285 +1,210 @@
 Eigenvalue Problems
 ===================
 
-LAPACK++ provides comprehensive routines for computing eigenvalues and eigenvectors of various matrix types.
+Eigenvalue and eigenvector computations for standard and generalized problems.
 
-Symmetric/Hermitian Eigenvalue Problems
-----------------------------------------
+Overview
+--------
 
-**syev**, **heev** - Compute all eigenvalues/vectors using divide-and-conquer
+LAPACK++ provides comprehensive eigenvalue solvers for:
+- Symmetric/Hermitian matrices (real eigenvalues)
+- Non-symmetric matrices (complex eigenvalues)
+- Generalized eigenvalue problems
+- Schur decompositions
 
-**syevd**, **heevd** - Faster divide-and-conquer algorithm
+Standard Eigenvalue Problems
+-----------------------------
 
-**syevx**, **heevx** - Compute selected eigenvalues/vectors by value or index
+Symmetric/Hermitian Eigenvalues
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**syevr**, **heevr** - Compute selected eigenvalues using MRRR algorithm (fastest, most accurate)
+**syev / heev** - Eigenvalues and eigenvectors (simple driver)
 
-**sygv**, **hegv** - Generalized eigenvalue problem :math:`Ax = \lambda Bx`
+Computes all eigenvalues and optionally eigenvectors of symmetric/Hermitian matrix.
+Uses QR iteration.
 
-Tridiagonal Eigenvalue Problems
+**syevd / heevd** - Eigenvalues using divide-and-conquer
+
+Faster algorithm for large matrices. Recommended for most cases.
+
+**syevr / heevr** - Eigenvalues using MRRR algorithm
+
+Most accurate and efficient for computing subset of eigenvalues/vectors.
+Uses Relatively Robust Representations.
+
+**syevx / heevx** - Eigenvalues with subset selection
+
+Computes selected eigenvalues/vectors by value range or index range.
+
+**sygv / hegv** - Generalized symmetric eigenvalue problem
+
+Solves :math:`Ax = \lambda Bx`, :math:`ABx = \lambda x`, or :math:`BAx = \lambda x`.
+
+**sygvd / hegvd** - Generalized using divide-and-conquer
+
+**sygvx / hegvx** - Generalized with subset selection
+
+Non-Symmetric Eigenvalues
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**geev** - Eigenvalues and eigenvectors
+
+Computes eigenvalues and optionally left/right eigenvectors.
+
+**gees** - Schur decomposition
+
+Computes Schur form :math:`A = QTQ^H` where T is upper triangular (or quasi-triangular for real).
+
+**geesx** - Schur with condition estimates
+
+Extended Schur decomposition with reciprocal condition numbers.
+
+**geevx** - Eigenvalues with balancing and condition estimates
+
+Tridiagonal/Banded Eigenproblems
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**stev** - Symmetric tridiagonal eigenvalues (simple driver)
+
+**stevd** - Symmetric tridiagonal using divide-and-conquer
+
+**stevr** - Symmetric tridiagonal using MRRR
+
+**stevx** - Symmetric tridiagonal with subset selection
+
+**sbev / hbev** - Symmetric band eigenvalues
+
+**sbevd / hbevd** - Symmetric band using divide-and-conquer
+
+**sbevx / hbevx** - Symmetric band with subset selection
+
+Generalized Eigenvalue Problems
 --------------------------------
 
-**stev** - Compute all eigenvalues/vectors of real symmetric tridiagonal
+Symmetric/Hermitian
+^^^^^^^^^^^^^^^^^^^
 
-**stevd** - Faster divide-and-conquer for tridiagonal
+**sygv / hegv** - Types 1, 2, 3 (see itype)
 
-**stevx** - Compute selected eigenvalues/vectors of tridiagonal
+Type 1: :math:`Ax = \lambda Bx` (most common)
 
-**stevr** - Use MRRR algorithm for tridiagonal (fastest)
+Type 2: :math:`ABx = \lambda x`
 
-**stebz** - Compute selected eigenvalues using bisection
+Type 3: :math:`BAx = \lambda x`
 
-**stein** - Compute eigenvectors by inverse iteration given eigenvalues
+**sygvd / hegvd** - Generalized using divide-and-conquer
 
-General Nonsymmetric Eigenvalue Problems
------------------------------------------
+**sygvx / hegvx** - Generalized with subset selection
 
-**geev** - Compute all eigenvalues and optionally left/right eigenvectors
+**spgv / hpgv** - Packed storage format
 
-**geevx** - Expert driver with balancing and condition numbers
+**spgvd / hpgvd** - Packed storage with divide-and-conquer
 
-**gees** - Compute Schur form with optional eigenvalue ordering
+**spgvx / hpgvx** - Packed storage with subset
 
-**geesx** - Schur form with condition numbers
+**sbgv / hbgv** - Banded matrices
 
-**trevc** - Compute eigenvectors from Schur form
+**sbgvd / hbgvd** - Banded with divide-and-conquer
 
-Generalized Nonsymmetric Problems
-----------------------------------
+**sbgvx / hbgvx** - Banded with subset
 
-**ggev** - Generalized eigenvalue problem :math:`Ax = \lambda Bx`
+Non-Symmetric (Generalized Schur)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**gges** - Generalized Schur form
+**gges** - Generalized Schur decomposition
 
-Schur Decomposition
--------------------
+Computes generalized Schur form of pair (A,B):
+:math:`A = QSZ^H`, :math:`B = QTZ^H`
 
-**hseqr** - Compute Schur form of upper Hessenberg matrix
+**ggesx** - Generalized Schur with condition estimates
 
-**trsen** - Reorder Schur factorization
+**ggev** - Generalized eigenvalues and eigenvectors
 
-**trexc** - Exchange diagonal blocks in Schur form
+Solves :math:`Ax = \lambda Bx`
 
-**trsyl** - Solve Sylvester equation :math:`AX + XB = C`
+**ggevx** - Generalized eigenvalues with balancing
 
-Example Usage
--------------
+Reduction to Standard Form
+---------------------------
 
-Compute all eigenvalues of symmetric matrix:
+**hegst / sygst** - Reduce to standard form
 
-.. code-block:: cpp
+Transforms :math:`Ax = \lambda Bx` to :math:`Cy = \lambda y` using Cholesky factorization of B.
 
-   int64_t n = 100;
-   std::vector<double> A(n * n);  // Symmetric matrix
-   std::vector<double> w(n);       // Eigenvalues
-   
-   // Fill lower triangle of A...
-   
-   // Compute eigenvalues only
-   int64_t info = lapack::syev(lapack::Job::NoVec, 
-                                lapack::Uplo::Lower,
-                                n, A.data(), n, w.data());
-   
-   if (info == 0) {
-       // Eigenvalues in w, ascending order
-   }
+**hpgst / spgst** - Packed storage variant
 
-Compute eigenvalues and eigenvectors:
+**hbgst / sbgst** - Band storage variant
 
-.. code-block:: cpp
+Auxiliary Reductions
+--------------------
 
-   int64_t n = 100;
-   std::vector<double> A(n * n);
-   std::vector<double> w(n);
-   
-   // Compute both eigenvalues and eigenvectors
-   int64_t info = lapack::syev(lapack::Job::Vec,
-                                lapack::Uplo::Lower,
-                                n, A.data(), n, w.data());
-   
-   if (info == 0) {
-       // Eigenvalues in w
-       // Eigenvectors in columns of A
-       // A(:,i) is eigenvector for eigenvalue w[i]
-   }
+**hetrd / sytrd** - Reduce to tridiagonal form
 
-Compute selected eigenvalues by value range:
+Computes :math:`A = Q T Q^H` where T is tridiagonal.
 
-.. code-block:: cpp
+**orgtr / ungtr** - Generate Q from tridiagonal reduction
 
-   int64_t n = 100;
-   std::vector<double> A(n * n);
-   std::vector<double> w(n);
-   std::vector<double> Z(n * n);  // Eigenvectors
-   std::vector<int64_t> ifail(n);
-   int64_t nfound;  // Number found
-   
-   double vl = -1.0, vu = 5.0;  // Value range [vl, vu]
-   double abstol = 0.0;          // Tolerance (0 = default)
-   
-   // Find eigenvalues in range [-1, 5]
-   int64_t info = lapack::syevx(
-       lapack::Job::Vec,           // Compute vectors
-       lapack::Range::Value,       // Select by value
-       lapack::Uplo::Lower,
-       n, A.data(), n,
-       vl, vu,                     // Value range
-       0, 0,                       // Index range (unused)
-       abstol, &nfound,            // Tolerance, count
-       w.data(),                   // Eigenvalues (nfound values)
-       Z.data(), n,                // Eigenvectors (n x nfound)
-       ifail.data()                // Failed indices
-   );
-   
-   if (info == 0) {
-       // Found nfound eigenvalues in [vl, vu]
-       // Eigenvalues in w[0:nfound-1]
-       // Eigenvectors in Z[:,0:nfound-1]
-   }
+**ormtr / unmtr** - Multiply by Q from tridiagonal reduction
 
-Compute selected eigenvalues by index range:
+**gehrd** - Reduce to Hessenberg form
 
-.. code-block:: cpp
+Computes :math:`A = Q H Q^H` where H is upper Hessenberg.
 
-   int64_t n = 100;
-   int64_t il = 1, iu = 10;  // Get smallest 10 eigenvalues (1-indexed)
-   int64_t nfound;
-   
-   std::vector<double> A(n * n);
-   std::vector<double> w(n);
-   std::vector<double> Z(n * iu);  // Need n x iu storage
-   std::vector<int64_t> ifail(n);
-   
-   int64_t info = lapack::syevx(
-       lapack::Job::Vec,
-       lapack::Range::Index,       // Select by index
-       lapack::Uplo::Lower,
-       n, A.data(), n,
-       0.0, 0.0,                   // Value range (unused)
-       il, iu,                     // Index range [1, 10]
-       0.0, &nfound,
-       w.data(), Z.data(), n,
-       ifail.data()
-   );
+**orghr / unghr** - Generate Q from Hessenberg reduction
 
-Generalized eigenvalue problem:
+**ormhr / unmhr** - Multiply by Q from Hessenberg reduction
 
-.. code-block:: cpp
-
-   int64_t n = 100, itype = 1;
-   std::vector<double> A(n * n);  // General matrix
-   std::vector<double> B(n * n);  // SPD matrix
-   std::vector<double> w(n);
-   
-   // Solve A*x = lambda*B*x (itype = 1)
-   // Or   A*B*x = lambda*x   (itype = 2)
-   // Or   B*A*x = lambda*x   (itype = 3)
-   
-   int64_t info = lapack::sygv(
-       itype,
-       lapack::Job::Vec,
-       lapack::Uplo::Lower,
-       n, A.data(), n, B.data(), n,
-       w.data()
-   );
-   
-   if (info == 0) {
-       // Generalized eigenvalues in w
-       // Eigenvectors in A
-   } else if (info > n) {
-       // B not positive definite
-   }
-
-General nonsymmetric eigenvalues:
-
-.. code-block:: cpp
-
-   int64_t n = 100;
-   std::vector<double> A(n * n);
-   std::vector<double> wr(n), wi(n);  // Real, imaginary parts
-   std::vector<double> VL(n * n), VR(n * n);  // Left, right vectors
-   
-   int64_t info = lapack::geev(
-       lapack::Job::Vec,      // Compute left vectors
-       lapack::Job::Vec,      // Compute right vectors
-       n, A.data(), n,
-       wr.data(), wi.data(),  // Eigenvalues
-       VL.data(), n,          // Left eigenvectors
-       VR.data(), n           // Right eigenvectors
-   );
-   
-   if (info == 0) {
-       // Real eigenvalues: (wr[i], 0)
-       // Complex eigenvalues: (wr[i] ± wi[i]*I)
-       // If wi[i] > 0: VR[:,i] + I*VR[:,i+1]
-       // If wi[i] < 0: VR[:,i] - I*VR[:,i+1]
-   }
-
-Schur decomposition with eigenvalue selection:
-
-.. code-block:: cpp
-
-   int64_t n = 100;
-   std::vector<double> A(n * n);
-   std::vector<double> wr(n), wi(n);
-   std::vector<double> VS(n * n);  // Schur vectors
-   int64_t sdim;  // Number selected
-   
-   // Select function: return 1 to select eigenvalue
-   auto select = [](const double* wr, const double* wi) -> int {
-       return (*wr < 0.0) ? 1 : 0;  // Select negative real part
-   };
-   
-   int64_t info = lapack::gees(
-       lapack::Job::Vec,         // Compute Schur vectors
-       lapack::Sort::Sorted,     // Sort eigenvalues
-       select,                   // Selection function
-       n, A.data(), n,
-       &sdim,                    // Number selected
-       wr.data(), wi.data(),
-       VS.data(), n
-   );
-   
-   if (info == 0) {
-       // A = VS * T * VS^T where T is quasi-upper triangular
-       // sdim eigenvalues with select(wr, wi) = 1
-   }
-
-Performance Comparison
-----------------------
-
-For symmetric/Hermitian matrices (n = 1000):
-
-- **syevr/heevr**: Fastest, most accurate (MRRR algorithm)
-- **syevd/heevd**: ~2-3x faster than syev/heev (divide-and-conquer)
-- **syev/heev**: Stable QR algorithm (slower)
-- **syevx/heevx**: Efficient for selected eigenvalues only
-
-For general matrices:
-
-- **geev**: Standard QR algorithm, O(n³)
-- **geevx**: Additional balancing and condition estimates
-- **gees**: Schur form, useful for reordering
-
-Tips for Best Performance
---------------------------
-
-1. **Use ∗evr for symmetric**: heevr/syevr is fastest and most accurate
-2. **Compute only what you need**: NoVec is faster if eigenvectors not needed
-3. **Use ∗evx for subsets**: Much faster when only some eigenvalues needed
-4. **Consider divide-and-conquer**: ∗evd is fast for all eigenvalues
-5. **Balance general matrices**: geevx balancing improves conditioning
-
-Accuracy Considerations
+Schur Form Manipulation
 ------------------------
 
-- Symmetric/Hermitian: Always backward stable, eigenvalues accurate to machine precision
-- General matrices: Sensitive to ill-conditioning, use geevx for condition estimates
-- MRRR algorithm (∗evr): More accurate than QR for clustered eigenvalues
-- Generalized problems: Accuracy depends on condition of B
+**hseqr** - Schur decomposition of Hessenberg
+
+Computes eigenvalues from Hessenberg form.
+
+**trexc** - Reorder Schur factorization
+
+Reorders diagonal blocks of Schur form.
+
+**trsen** - Reorder and compute condition numbers
+
+**trsyl** - Sylvester equation :math:`AX \pm XB = C`
+
+Eigenvector Computation
+------------------------
+
+**trevc** - Eigenvectors from Schur form
+
+Computes right and/or left eigenvectors from triangular Schur form.
+
+**hsein** - Eigenvectors by inverse iteration
+
+**trsna** - Reciprocal condition numbers for eigenvectors
+
+Balancing
+---------
+
+**gebal** - Balance non-symmetric matrix
+
+Permutes and scales to improve eigenvalue accuracy.
+
+**gebak** - Transform eigenvectors after balancing
+
+**ggbal** - Balance generalized eigenvalue problem
+
+**ggbak** - Transform eigenvectors after generalized balancing
+
+Utility Functions
+-----------------
+
+**lacpy** - Copy matrix or submatrix
+
+**laset** - Initialize matrix to constants
+
+**disna** - Reciprocal condition numbers for eigenvectors
 
 See Also
 --------
 
-- :doc:`factorizations` - QR, Hessenberg reduction used internally
-- :doc:`auxiliary` - Balancing, scaling routines
+- :doc:`svd` - Singular value decomposition
+- :doc:`linear_systems` - Related factorizations
+- :doc:`util` - Job and Range enumerations
