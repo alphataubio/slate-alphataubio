@@ -1,5 +1,5 @@
 Overview
-========
+--------
 
 This guide provides comprehensive documentation for using SLATE (Software for Linear Algebra 
 Targeting Exascale). SLATE provides fundamental dense linear algebra capabilities for 
@@ -48,6 +48,7 @@ Contents
 
 .. toctree::
    :maxdepth: 2
+   :titlesonly:
 
    getting_started
    installation
