@@ -1,5 +1,5 @@
 Overview
---------
+========
 
 This guide provides comprehensive documentation for using SLATE (Software for Linear Algebra 
 Targeting Exascale). SLATE provides fundamental dense linear algebra capabilities for 
@@ -42,20 +42,9 @@ SLATE fulfills the following design goals:
 **Easy Transition**
     Native support for ScaLAPACK 2D block-cyclic layout with backwards-compatible API
 
-.. toctree::
-   :maxdepth: 2
-   :titlesonly:
-
-   getting_started
-   installation
-   matrices
-   operations
-   testing
-   compatibility
-
 
 Software Requirements
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 SLATE requires:
 
@@ -71,7 +60,7 @@ SLATE also depends on:
 - `LAPACK++ <https://github.com/icl-utk-edu/lapackpp>`_: C++ wrappers for LAPACK
 
 Project Resources
------------------
+~~~~~~~~~~~~~~~~~
 
 - **Website**: https://icl.utk.edu/slate/
 - **Source Code**: https://github.com/icl-utk-edu/slate/
