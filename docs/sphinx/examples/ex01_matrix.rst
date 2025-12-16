@@ -15,13 +15,6 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex01_matrix.cc
-   :language: cpp
-   :linenos:
-
-Code Explanation
-----------------
-
 **Matrix Construction (Lines 18-44)**
 
 .. code-block:: cpp
@@ -112,3 +105,7 @@ Direct element access in distributed memory requires care:
 3.  We acquire the tile `T` on the host.
 4.  We iterate within the tile using local indices `ii`, `jj`.
 5.  `T.at(ii, jj)` provides safe access (with bounds checking in debug mode), while `T.data()` (shown in `elements2`) provides raw pointer access for maximum performance in inner loops.
+
+.. literalinclude:: ../../../examples/ex01_matrix.cc
+   :language: cpp
+   :linenos:

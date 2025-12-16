@@ -17,13 +17,6 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex02_conversion.cc
-   :language: cpp
-   :linenos:
-
-Code Explanation
-----------------
-
 **General Matrix Creation (Lines 26-29)**
 
 .. code-block:: cpp
@@ -84,3 +77,8 @@ Here we create Lower (`L`) and Upper (`U`) triangular views.
 - `S` represents a symmetric matrix where :math:`A_{ji} = A_{ij}`. Only the upper triangle is stored/referenced; the lower triangle is implicitly defined by symmetry.
 - `H` represents a Hermitian matrix where :math:`A_{ji} = \bar{A}_{ij}`.
 - These are crucial for optimized solvers (like Cholesky or LDLT) that exploit symmetry to save computation and storage.
+
+
+.. literalinclude:: ../../../examples/ex02_conversion.cc
+   :language: cpp
+   :linenos:

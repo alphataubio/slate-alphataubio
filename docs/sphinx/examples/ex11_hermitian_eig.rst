@@ -13,12 +13,6 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex11_hermitian_eig.cc
-   :language: cpp
-   :linenos:
-
-Code Explanation
-----------------
 
 **Setup (Lines 28-32)**
 
@@ -58,3 +52,9 @@ Computes both eigenvalues and eigenvectors.
 
 - `Z` is overwritten with the eigenvectors.
 - The columns of `Z` correspond to the eigenvalues in `Lambda`.
+
+
+.. literalinclude:: ../../../examples/ex11_hermitian_eig.cc
+   :language: cpp
+   :linenos:
+

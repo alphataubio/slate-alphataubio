@@ -15,12 +15,6 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex07_linear_system_cholesky.cc
-   :language: cpp
-   :linenos:
-
-Code Explanation
-----------------
 
 **Cholesky Solve (Lines 38-40)**
 
@@ -75,3 +69,7 @@ Computes :math:`A^{-1}` for a positive definite matrix.
     real_t rcond = slate::chol_rcondest_using_factor( slate::Norm::One, A, A_norm );
 
 Standard condition number estimation flow: Norm -> Factor -> Estimate.
+
+.. literalinclude:: ../../../examples/ex07_linear_system_cholesky.cc
+   :language: cpp
+   :linenos:

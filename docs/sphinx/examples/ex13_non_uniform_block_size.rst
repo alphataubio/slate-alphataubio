@@ -13,12 +13,7 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex13_non_uniform_block_size.cc
-   :language: cpp
-   :linenos:
 
-Code Explanation
-----------------
 
 **Custom Block Size Function (Lines 30-34)**
 
@@ -58,3 +53,7 @@ The constructor takes these functions as arguments.
 **Verification (Lines 53-59)**
 
 The code iterates through the matrix to verify that the block sizes match the logic defined in the lambda. Note that `A.tileNb(j)` handles the boundary condition at the end of the matrix automatically (clamping to `n`).
+
+.. literalinclude:: ../../../examples/ex13_non_uniform_block_size.cc
+   :language: cpp
+   :linenos:

@@ -12,13 +12,6 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex03_submatrix.cc
-   :language: cpp
-   :linenos:
-
-Code Explanation
-----------------
-
 **Tile-based Submatrices (Lines 36-39)**
 
 .. code-block:: cpp
@@ -58,3 +51,7 @@ The `slice` method creates a view using **global element indices** (0-based row/
 - `B = A.slice(0, m-1, 0, n-1)`: Slice of the entire matrix dimensions.
 - `B = A.slice(0, m-1, 0, 0)`: Slice of the first column (single vector).
 - `B = A.slice(0, 0, 0, n-1)`: Slice of the first row.
+
+.. literalinclude:: ../../../examples/ex03_submatrix.cc
+   :language: cpp
+   :linenos:

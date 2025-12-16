@@ -13,13 +13,6 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex10_svd.cc
-   :language: cpp
-   :linenos:
-
-Code Explanation
-----------------
-
 **Setup (Lines 29-30)**
 
 .. code-block:: cpp
@@ -64,3 +57,7 @@ To compute vectors:
     slate::svd( A, Sigma, Uempty, VH ); // only V^H
 
 You can compute just `U` or just `VH` by passing an empty matrix placeholder for the unwanted component. This saves computation time.
+
+.. literalinclude:: ../../../examples/ex10_svd.cc
+   :language: cpp
+   :linenos:

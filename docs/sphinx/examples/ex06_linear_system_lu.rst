@@ -15,12 +15,6 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex06_linear_system_lu.cc
-   :language: cpp
-   :linenos:
-
-Code Explanation
-----------------
 
 **Standard LU Solve (Lines 38-41)**
 
@@ -84,6 +78,12 @@ Estimates the reciprocal condition number :math:`1/\kappa(A)`.
 1.  Compute the norm of the original matrix **before** factorization.
 2.  Factorize the matrix.
 3.  Call `lu_rcondest_using_factor`. This estimates :math:`\|A^{-1}\|` cheaply using the factors and combines it with the provided :math:`\|A\|`.
+
+
+.. literalinclude:: ../../../examples/ex06_linear_system_lu.cc
+   :language: cpp
+   :linenos:
+
 
 C API Example
 -------------

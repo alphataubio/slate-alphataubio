@@ -16,12 +16,6 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex15_set_matrix.cc
-   :language: cpp
-   :linenos:
-
-Code Explanation
-----------------
 
 **Setting Random Values (Lines 19-48)**
 
@@ -57,3 +51,7 @@ This is useful for generating deterministic test matrices where the value depend
     };
 
 This pattern allows initializing sparse or structured dense matrices, such as those arising from finite difference discretizations (e.g., a 9-point Laplacian stencil). The lambda defines the connectivity logic.
+
+.. literalinclude:: ../../../examples/ex15_set_matrix.cc
+   :language: cpp
+   :linenos:

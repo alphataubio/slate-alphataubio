@@ -16,13 +16,6 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex04_norm.cc
-   :language: cpp
-   :linenos:
-
-Code Explanation
-----------------
-
 **General Matrix Norms (Lines 27-41)**
 
 .. code-block:: cpp
@@ -63,3 +56,7 @@ Similar to symmetric matrices, but for Hermitian matrices (where symmetric eleme
     real_type T_norm_one = slate::norm( slate::Norm::One, T );
 
 For triangular (and trapezoid) matrices, `slate::norm` respects the structure. Elements in the empty part of the matrix (e.g., upper triangle for a Lower triangular matrix) are treated as zero and do not contribute to the norm.
+
+.. literalinclude:: ../../../examples/ex04_norm.cc
+   :language: cpp
+   :linenos:

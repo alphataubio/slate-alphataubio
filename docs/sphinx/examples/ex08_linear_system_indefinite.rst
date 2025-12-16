@@ -14,13 +14,6 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex08_linear_system_indefinite.cc
-   :language: cpp
-   :linenos:
-
-Code Explanation
-----------------
-
 **Indefinite Solve (Lines 41-50)**
 
 .. code-block:: cpp
@@ -54,3 +47,8 @@ Separates the factorization (Aasen's algorithm) from the solve.
 - `indefinite_factor` (hetrf): Computes the :math:`LTL^H` factorization.
 - `indefinite_solve_using_factor` (hetrs): Solves the system using the factors.
 - Requires managing the workspaces `T` and `H` explicitly even in the simplified API wrapper if you want to keep the factors.
+
+.. literalinclude:: ../../../examples/ex08_linear_system_indefinite.cc
+   :language: cpp
+   :linenos:
+

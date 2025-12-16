@@ -14,12 +14,6 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex09_least_squares.cc
-   :language: cpp
-   :linenos:
-
-Code Explanation
-----------------
 
 **Overdetermined Least Squares (Lines 27-46)**
 
@@ -53,3 +47,7 @@ SLATE's `gels` routine expects an `m` by `n` matrix where `m >= n`. To solve the
 
 - The example demonstrates solving :math:`A^H X = B` where `A` is tall (`m > n`), which effectively simulates an underdetermined system from the perspective of the transposed matrix.
 - `BX` must be size `max(m, n)` by `nrhs`. Since the solution vector `X` will be larger than the input `B`, `BX` provides the necessary space.
+
+.. literalinclude:: ../../../examples/ex09_least_squares.cc
+   :language: cpp
+   :linenos:

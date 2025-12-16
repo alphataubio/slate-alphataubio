@@ -16,12 +16,7 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex12_generalized_hermitian_eig.cc
-   :language: cpp
-   :linenos:
 
-Code Explanation
-----------------
 
 **Problem Setup (Lines 32-37)**
 
@@ -66,3 +61,7 @@ Solves :math:`ABx = \lambda x`.
 Solves :math:`BAx = \lambda x`.
 
 Note that for all types, `B` must be positive definite because the algorithms internally perform a Cholesky factorization of `B` to transform the generalized problem into a standard eigenvalue problem.
+
+.. literalinclude:: ../../../examples/ex12_generalized_hermitian_eig.cc
+   :language: cpp
+   :linenos:

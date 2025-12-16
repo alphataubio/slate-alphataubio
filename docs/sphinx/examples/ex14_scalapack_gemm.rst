@@ -13,12 +13,7 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex14_scalapack_gemm.cc
-   :language: cpp
-   :linenos:
 
-Code Explanation
-----------------
 
 **BLACS Initialization (Lines 45-52)**
 
@@ -52,3 +47,7 @@ The code calls the standard PBLAS functions (`p[sdcz]gemm`).
 - **Crucial Point**: If this program is linked against the SLATE ScaLAPACK API library (`-lslate_scalapack_api`), these calls will be intercepted by SLATE.
 - SLATE converts the ScaLAPACK descriptors to SLATE `Matrix` objects internally, executes the operation using SLATE's engine (potentially on GPUs), and then ensures the result is consistent with ScaLAPACK expectations.
 - This allows drop-in acceleration for legacy codes.
+
+.. literalinclude:: ../../../examples/ex14_scalapack_gemm.cc
+   :language: cpp
+   :linenos:

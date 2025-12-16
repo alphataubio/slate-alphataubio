@@ -14,13 +14,6 @@ Key Concepts
 C++ Example
 -----------
 
-.. literalinclude:: ../../../examples/ex05_blas.cc
-   :language: cpp
-   :linenos:
-
-Code Explanation
-----------------
-
 **General Matrix Multiplication (GEMM) (Lines 36-40)**
 
 .. code-block:: cpp
@@ -96,6 +89,12 @@ Computes :math:`C = \alpha A A^T + \beta C` where `C` is symmetric. Only the des
     slate::triangular_solve( alpha, A, B );          // trsm
 
 For triangular matrices, we can multiply (`trmm`) or solve (`trsm`). The simplified API names make the intent clear ("multiply" vs "solve").
+
+
+.. literalinclude:: ../../../examples/ex05_blas.cc
+   :language: cpp
+   :linenos:
+
 
 C API Example
 -------------
