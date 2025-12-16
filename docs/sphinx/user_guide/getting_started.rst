@@ -227,4 +227,4 @@ Next Steps
 - :doc:`installation`: Detailed installation instructions
 - :doc:`matrices`: Understanding SLATE matrix types and operations
 - :doc:`operations`: Guide to all SLATE operations
-- :doc:`../api/index`: Complete API reference
+- :doc:`../api/slate/index`: Complete API reference

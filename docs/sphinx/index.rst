@@ -21,7 +21,7 @@ adequately retrofitted for modern accelerated architectures.
         Comprehensive guide covering matrices, operations, and all SLATE features.
 
     .. grid-item-card:: 📚 API Reference
-        :link: api/index
+        :link: api/slate/index
         :link-type: doc
 
         Complete API documentation for all SLATE functions and classes.
@@ -81,52 +81,36 @@ Resources
    :maxdepth: 2
    :caption: USER GUIDE
    :hidden:
+   :titlesonly:
 
    user_guide/index
-   user_guide/getting_started
-   user_guide/installation
-   user_guide/matrices
-   user_guide/operations
-   user_guide/testing
-   user_guide/compatibility
 
 
 .. toctree::
    :maxdepth: 2
    :caption: API REFERENCE
    :hidden:
+   :titlesonly:
 
-   api/index
+   api/slate/index
+   api/blaspp/index
+   api/lapackpp/index
 
 
 .. toctree::
    :maxdepth: 2
    :caption: EXAMPLES
    :hidden:
+   :titlesonly:
 
-   examples/overview
-   examples/ex01_matrix
-   examples/ex02_conversion
-   examples/ex03_submatrix
-   examples/ex04_norm
-   examples/ex05_blas
-   examples/ex06_linear_system_lu
-   examples/ex07_linear_system_cholesky
-   examples/ex08_linear_system_indefinite
-   examples/ex09_least_squares
-   examples/ex10_svd
-   examples/ex11_hermitian_eig
-   examples/ex12_generalized_hermitian_eig
-   examples/ex13_non_uniform_block_size
-   examples/ex14_scalapack_gemm
-   examples/ex15_set_matrix
-   examples/building
+   examples/index
 
 
 .. toctree::
    :maxdepth: 2
    :caption: DEVELOPER GUIDE
    :hidden:
+   :titlesonly:
 
    developer_guide/index
 
@@ -135,6 +119,7 @@ Resources
    :maxdepth: 1
    :caption: ADDITIONAL INFO
    :hidden:
+   :titlesonly:
 
    about
    changelog

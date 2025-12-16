@@ -42,10 +42,6 @@ SLATE fulfills the following design goals:
 **Easy Transition**
     Native support for ScaLAPACK 2D block-cyclic layout with backwards-compatible API
 
-
-Contents
---------
-
 .. toctree::
    :maxdepth: 2
    :titlesonly:

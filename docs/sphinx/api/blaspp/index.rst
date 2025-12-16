@@ -1,4 +1,4 @@
-BLAS++
+blaspp
 ======
 
 BLAS++ provides a modern C++ interface to the Basic Linear Algebra Subroutines (BLAS), supporting both CPU and GPU execution.
@@ -287,6 +287,5 @@ BLAS++ uses exceptions for errors:
 See Also
 --------
 
-- :doc:`../user_guide/blaspp` - User guide with examples
 - `BLAS++ GitHub Repository <https://github.com/icl-utk-edu/blaspp>`_
 - `BLAS Reference <https://www.netlib.org/blas/>`_
